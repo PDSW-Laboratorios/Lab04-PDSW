@@ -32,8 +32,8 @@ and open the template in the editor.
             <p:outputLabel id="attempt" value="#{beanEstadoAdivinanza.attempts}"/>
             <p>Ingresa un numero: </p>
             <p:inputText id="numero" required="true" rendered="true" value="#{beanEstadoAdivinanza.guessNumber}"/>
-            <p:commandButton id="send" rendered="true" update="formulario_adivinanza"/>
-            <p:commandButton id="reset" rendered="true" update="formulario_adivinanza" actionListener="#{beanEstadoAdivinanza.reiniciar}">
+            <p:commandButton id="send" rendered="#{beanEstadoAdivinanza.showSend}" update="formulario_adivinanza" enable="true"/>
+            <p:commandButton id="reset" rendered="#{beanEstadoAdivinanza.showReset}" update="formulario_adivinanza" enable="true" actionListener="#{beanEstadoAdivinanza.reiniciar}"/>
         </h:form>   
     </h:body>
 </html>
