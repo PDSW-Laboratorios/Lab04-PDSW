@@ -6,32 +6,39 @@
 package com.eci_pdsw.guessthenumber;
 
 import java.io.Serializable;
+import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
-import javax.enterprise.context.SessionScoped;
+import javax.faces.bean.SessionScoped;
 
 /**
  *
  * @author fabian
  */
+@ApplicationScoped
 @ManagedBean(name="beanEstadoAdivinanza")
-@SessionScoped
 public class beanEstadoAdivinanza implements Serializable{
     
     private static final int INITIAL_PRIZE = 100000;
-    private static final int MINIMUM = 0;
-    private static final int MAXIMUM = 100;
+    private static final int MINIMUM_PRIZE = 0;
+    private static final int MAXIMUM_PRIZE = INITIAL_PRIZE;
+    private static final int MAXIMUM_VALUE = 20;
     private static final int STEPS = 10000;
     private static final String status1 = "Sigue intentando, te falta poco para lograrlo.";
     private static final String status2 = "¡Ganaste! Tu premio es de ";
+    private static final String status3 = "Lo siento, intentalo de nuevo reiniciando el juego.";
     
-    
-    private boolean showSend=true;
-    private boolean showReset=true;
     private int number;
+    private int guessedNumber;
     private int attempts;
     private int prize;
     private String gameStatus;
     
+    public beanEstadoAdivinanza() {
+        number = (int) (Math.random() * MAXIMUM_VALUE);
+        attempts = 0;
+        prize = INITIAL_PRIZE;
+        gameStatus = status1;
+    }
     
     public int getNumber() {
         return number;
@@ -53,20 +60,31 @@ public class beanEstadoAdivinanza implements Serializable{
         return Math.max(Math.min(value, max), min);
     }
     
-    public void setGuessNumber(int guessedNumber) {
-        if (prize > MINIMUM) {
-            if (guessedNumber == number) {
+    public int getGuessNumber() {
+        return guessedNumber;
+    }
+    
+    public void process() {
+        if (prize > MINIMUM_PRIZE) {
+            if (this.guessedNumber == number) {
                 gameStatus = status2 + prize;
             } else {
+                prize = bounds(prize - STEPS, MINIMUM_PRIZE, MAXIMUM_PRIZE);
                 gameStatus = status1;
-                prize = bounds(prize - STEPS, MINIMUM, MAXIMUM);
+                if (prize == 0){
+                    gameStatus = status3;
+                }
                 attempts++;
             }
         }
     }
     
+    public void setGuessNumber(int guessedNumber) {
+        this.guessedNumber = guessedNumber;
+    }
+    
     public void reiniciar(){
-        number = (int) (Math.random() * MAXIMUM);
+        number = (int) (Math.random() * MAXIMUM_VALUE);
         attempts = 0;
         prize = INITIAL_PRIZE;
         gameStatus = status1;
